@@ -5,7 +5,6 @@ import {
   MdFastfood,
   MdDelete,
   MdFoodBank,
-  MdPriceChange,
   MdAttachMoney,
 } from "react-icons/md"
 import { categories } from "../utils/data"
@@ -18,7 +17,10 @@ import {
   uploadBytesResumable,
 } from "firebase/storage"
 import { storage } from "../firebase.config"
-import { saveItem } from "../utils/firebaseFunctions"
+import { getAllFoodItems, saveItem } from "../utils/firebaseFunctions"
+
+import { actionType } from "../context/reducer"
+import { useStateValue } from "../context/StateProvider"
 
 const CreateContainer = () => {
   const [title, setTitle] = useState("")
@@ -30,6 +32,8 @@ const CreateContainer = () => {
   const [alertStatus, setAlertStatus] = useState("danger")
   const [msg, setMsg] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const [{ foodItems }, dispatch] = useStateValue()
 
   const uploadImageHandler = (e) => {
     setIsLoading(true)
@@ -134,6 +138,15 @@ const CreateContainer = () => {
     setCalories("")
     setPrice("")
     setCalories("Select Category")
+  }
+
+  const fetchData = async () => {
+    await getAllFoodItems().then((data) => {
+      dispatch({
+        type: actionType.SET_FOOD_ITEMS,
+        foodItems: data,
+      })
+    })
   }
 
   return (
