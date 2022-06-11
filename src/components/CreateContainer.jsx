@@ -11,22 +11,130 @@ import {
 import { categories } from "../utils/data"
 import Loader from "./Loader"
 
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage"
+import { storage } from "../firebase.config"
+import { saveItem } from "../utils/firebaseFunctions"
+
 const CreateContainer = () => {
   const [title, setTitle] = useState("")
   const [calories, setCalories] = useState("")
   const [price, setPrice] = useState("")
   const [category, setCategory] = useState(null)
-  const [imageAssest, smtIMageAssest] = useState(null)
+  const [imageAsset, setImageAsset] = useState(null)
   const [fields, setFields] = useState(false)
-  const [alertStatus, AetalertStatus] = useState("danger")
+  const [alertStatus, setAlertStatus] = useState("danger")
   const [msg, setMsg] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const uploadImageHandler = () => {}
+  const uploadImageHandler = (e) => {
+    setIsLoading(true)
+    const imageFile = e.target.files[0]
+    const storageRef = ref(storage, `Images/${Date.now()}-${imageFile.name}`)
+    const uploadTask = uploadBytesResumable(storageRef, imageFile)
 
-  const deleteImageHandler = () => {}
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const uploadProgress = (snapshot) => {
+          const uploadProgress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        }
+      },
+      (error) => {
+        console.log(error)
+        setFields(true)
+        setMsg("Error while uploading: Try Again 🙇‍♀️")
+        setAlertStatus("danger")
+        setTimeout(() => {
+          setFields(false)
+          setIsLoading(false)
+        }, 4000)
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImageAsset(downloadURL)
+          setIsLoading(false)
+          setFields(true)
+          setMsg("Image uploaded successfully 😊")
+          setAlertStatus("success")
+          setTimeout(() => {
+            setFields(false)
+          }, 4000)
+        })
+      }
+    )
+  }
 
-  const saveDetailsHandler = () => {}
+  const deleteImageHandler = () => {
+    setIsLoading(true)
+    const deleteRef = ref(storage, imageAsset)
+
+    deleteObject(deleteRef).then(() => {
+      setImageAsset(null)
+      setIsLoading(false)
+      setFields(true)
+      setMsg("Image deleted successfully 😊")
+      setAlertStatus("success")
+      setTimeout(() => {
+        setFields(false)
+      }, 4000)
+    })
+  }
+
+  const saveDetailsHandler = () => {
+    setIsLoading(true)
+    try {
+      if (!title || !calories || !imageAsset || !price || !category) {
+        setFields(true)
+        setMsg("Required fields can't be empty")
+        setAlertStatus("danger")
+        setTimeout(() => {
+          setFields(false)
+          setIsLoading(false)
+        }, 4000)
+      } else {
+        const data = {
+          id: `${Date.now()}`,
+          title: title,
+          imageURL: imageAsset,
+          category: category,
+          qty: 1,
+          price: price,
+        }
+        saveItem(data)
+        setIsLoading(false)
+        setFields(true)
+        setMsg("Data uploaded successfully 😊")
+        clearDataHandler()
+        setAlertStatus("success")
+        setTimeout(() => {
+          setFields(false)
+        }, 4000)
+      }
+    } catch (error) {
+      console.log(error)
+      setFields(true)
+      setMsg("Error while uploading: Try Again 🙇‍♀️")
+      setAlertStatus("danger")
+      setTimeout(() => {
+        setFields(false)
+        setIsLoading(false)
+      }, 4000)
+    }
+  }
+
+  const clearDataHandler = () => {
+    setTitle("")
+    setImageAsset(null)
+    setCalories("")
+    setPrice("")
+    setCalories("Select Category")
+  }
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center">
@@ -84,7 +192,7 @@ const CreateContainer = () => {
             <Loader />
           ) : (
             <>
-              {!imageAssest ? (
+              {!imageAsset ? (
                 <>
                   <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
                     <div className="w-full h-full flex flex-col items-center justify-center gap-2">
@@ -106,9 +214,8 @@ const CreateContainer = () => {
                 <>
                   <div className="relative h-full">
                     <img
-                      src={imageAssest}
-                      className="w-full
-                      h-full object-cover"
+                      src={imageAsset}
+                      className="w-full h-full object-cover"
                       alt="uploaded image"
                     />
                     <button
