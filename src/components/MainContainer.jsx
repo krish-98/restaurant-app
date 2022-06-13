@@ -1,10 +1,20 @@
-import React from "react"
+import React, { useRef } from "react"
 import HomeContainer from "./HomeContainer"
 import { motion } from "framer-motion"
 import { MdChevronRight, MdChevronLeft } from "react-icons/md"
 import RowContainer from "./RowContainer"
 
+import { useStateValue } from "../context/StateProvider"
+
 const MainContainer = () => {
+  const [{ foodItems }, dispatch] = useStateValue()
+
+  const rowContainerRef = useRef()
+
+  const scrollHandler = (scrollOffset) => {
+    rowContainerRef.current.scrollLeft += scrollOffset
+  }
+
   return (
     <div className="w-full h-auto flex flex-col items-center justify-center">
       <HomeContainer />
@@ -17,12 +27,14 @@ const MainContainer = () => {
 
           <div className="hidden md:flex gap-3 items-center">
             <motion.div
+              onClick={() => scrollHandler(-200)}
               whileTap={{ scale: 0.75 }}
               className="w-8 h-8 rounded-lg bg-orange-300 hover:bg-orange-500 cursor-pointer transition-all duration-100 ease-in-out hover:shadow-lg flex items-center justify-center"
             >
               <MdChevronLeft className="text-lg text-white" />
             </motion.div>
             <motion.div
+              onClick={() => scrollHandler(200)}
               whileTap={{ scale: 0.75 }}
               className="w-8 h-8 rounded-lg bg-orange-300 hover:bg-orange-500 cursor-pointer transition-all duration-100 ease-in-out hover:shadow-lg flex items-center justify-center"
             >
@@ -32,7 +44,11 @@ const MainContainer = () => {
         </div>
       </section>
 
-      <RowContainer flag={true} />
+      <RowContainer
+        rowContainerRef={rowContainerRef}
+        flag={true}
+        data={foodItems?.filter((item) => item.category === "fruits")}
+      />
     </div>
   )
 }
