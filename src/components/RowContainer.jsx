@@ -16,7 +16,7 @@ const RowContainer = ({ flag, data, rowContainerRef }) => {
         data.map((item) => (
           <div
             key={item?.id}
-            className="w-300 min-w-[300px] h-auto md:w-340 md:min-w-[340px]  bg-cardOverlay p-2 rounded-lg my-12 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-center justify-between"
+            className="w-300 min-w-[300px] h-auto md:w-340 md:min-w-[340px]  bg-cardOverlay p-2 rounded-lg my-12 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-center justify-between relative"
           >
             <div className="w-full flex items-center justify-between">
               <motion.img
