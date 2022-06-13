@@ -2,6 +2,7 @@ import React from "react"
 import HomeContainer from "./HomeContainer"
 import { motion } from "framer-motion"
 import { MdChevronRight, MdChevronLeft } from "react-icons/md"
+import RowContainer from "./RowContainer"
 
 const MainContainer = () => {
   return (
@@ -30,6 +31,8 @@ const MainContainer = () => {
           </div>
         </div>
       </section>
+
+      <RowContainer flag={true} />
     </div>
   )
 }

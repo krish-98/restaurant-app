@@ -265,7 +265,7 @@ const CreateContainer = () => {
               required
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              placeholder="Calories"
+              placeholder="Price"
               className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
             />
           </div>
