@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import HomeContainer from "./HomeContainer"
 import { motion } from "framer-motion"
 import { MdChevronRight, MdChevronLeft } from "react-icons/md"
@@ -10,9 +10,11 @@ import MenuContainer from "./MenuContainer"
 import CartContainer from "./CartContainer"
 
 const MainContainer = () => {
-  const [{ foodItems }, dispatch] = useStateValue()
+  const [{ foodItems, cartShow }, dispatch] = useStateValue()
 
   const rowContainerRef = useRef()
+
+  // useEffect(() => {}, [cartShow, rowContainerRef])
 
   const scrollHandler = (scrollOffset) => {
     rowContainerRef.current.scrollLeft += scrollOffset
@@ -55,7 +57,7 @@ const MainContainer = () => {
 
       <MenuContainer />
 
-      <CartContainer />
+      {cartShow && <CartContainer />}
     </div>
   )
 }

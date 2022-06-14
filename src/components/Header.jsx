@@ -17,8 +17,9 @@ const Header = () => {
   const firebaseAuth = getAuth(app)
   const provider = new GoogleAuthProvider()
 
+  const [{ user, cartShow }, dispatch] = useStateValue()
+
   const [isMenu, setIsMenu] = useState(false)
-  const [{ user }, dispatch] = useStateValue()
 
   const loginHandler = async () => {
     if (!user) {
@@ -44,6 +45,13 @@ const Header = () => {
     dispatch({
       type: actionType.SET_USER,
       user: null,
+    })
+  }
+
+  const showCartHandler = () => {
+    dispatch({
+      type: actionType.SET_CART_SHOW,
+      cartShow: !cartShow,
     })
   }
 
@@ -81,6 +89,7 @@ const Header = () => {
 
           <motion.div
             whileTap={{ scale: 0.6 }}
+            onClick={showCartHandler}
             className="relative flex justify-center items-center cursor-pointer"
           >
             <MdShoppingBasket className="text-2xl text-textColor cursor-pointer" />
@@ -131,6 +140,7 @@ const Header = () => {
       <div className="flex items-center justify-between md:hidden w-full h-full">
         <motion.div
           whileTap={{ scale: 0.6 }}
+          onClick={showCartHandler}
           className="relative flex justify-center items-center cursor-pointer"
         >
           <MdShoppingBasket className="text-2xl text-textColor cursor-pointer" />
