@@ -17,7 +17,7 @@ const Header = () => {
   const firebaseAuth = getAuth(app)
   const provider = new GoogleAuthProvider()
 
-  const [{ user, cartShow }, dispatch] = useStateValue()
+  const [{ user, cartShow, cartItems }, dispatch] = useStateValue()
 
   const [isMenu, setIsMenu] = useState(false)
 
@@ -93,9 +93,13 @@ const Header = () => {
             className="relative flex justify-center items-center cursor-pointer"
           >
             <MdShoppingBasket className="text-2xl text-textColor cursor-pointer" />
-            <div className="absolute w-5 h-5 bg-cartNumBg rounded-full flex justify-center items-center -top-2 -right-2">
-              <p className="text-xs text-white font-semibold">2</p>
-            </div>
+            {cartItems && cartItems.length > 0 && (
+              <div className="absolute w-5 h-5 bg-cartNumBg rounded-full flex justify-center items-center -top-2 -right-2">
+                <p className="text-xs text-white font-semibold">
+                  {cartItems.length}
+                </p>
+              </div>
+            )}
           </motion.div>
 
           <div className="relative">
@@ -144,9 +148,13 @@ const Header = () => {
           className="relative flex justify-center items-center cursor-pointer"
         >
           <MdShoppingBasket className="text-2xl text-textColor cursor-pointer" />
-          <div className="absolute w-5 h-5 bg-cartNumBg rounded-full flex justify-center items-center -top-2 -right-2">
-            <p className="text-xs text-white font-semibold">2</p>
-          </div>
+          {cartItems && cartItems.length > 0 && (
+            <div className="absolute w-5 h-5 bg-cartNumBg rounded-full flex justify-center items-center -top-2 -right-2">
+              <p className="text-xs text-white font-semibold">
+                {cartItems.length}
+              </p>
+            </div>
+          )}
         </motion.div>
 
         <Link to="/" className="flex items-center gap-2">
